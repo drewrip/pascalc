@@ -3,11 +3,11 @@
 grammar Pascal;
 
 prog
-	: programblock varblock mainblock
+	: programblock varblock funcprocblock mainblock
 	;
 
 varblock
-	: VAR (vardecl)*
+	: (VAR (vardecl)*)?
 	;
 
 vardecl
@@ -18,8 +18,45 @@ mainblock
 	: BEGIN STATEMENT MAINEND
 	;
 
+block
+	: BEGIN STATEMENT END SEMICOLON
+	;
+
 programblock
 	: PROGRAM ID SEMICOLON
+	;
+
+functionheader
+	: FUNC ID LEFTPAREN explparams RIGHTPAREN COLON TYPE SEMICOLON
+	;
+
+// NEED TO ADD VARIABLE DECLARATION TO PROCEDURES AND THE REFERENCE VARIABLE
+procedureheader
+	: PROC ID LEFTPAREN explparams RIGHTPAREN SEMICOLON
+	;
+
+explparams
+	: ((((ID)(COMMA ID)*) COLON TYPE SEMICOLON)*(((ID)(COMMA ID)*) COLON TYPE))?
+	;
+
+function
+	: functionheader block
+	;
+
+procedure
+	: procedureheader varblock block
+	;
+
+funcprocblock
+	: (function|procedure)*
+	;
+
+FUNC
+	: 'FUNCTION'
+	;
+
+PROC
+	: 'PROCEDURE'
 	;
 
 BEGIN
@@ -34,7 +71,7 @@ MAINEND
 	;
 
 STATEMENT
-	: 'run'
+	: 'stmt'
 	;
 
 SEMICOLON
@@ -43,6 +80,10 @@ SEMICOLON
 
 COLON
 	: ':'
+	;
+
+COMMA
+	: ','
 	;
 
 VAR
@@ -77,5 +118,14 @@ UNDERSCORE
 	: '_'
 	;
 
+LEFTPAREN
+	: '('
+	;
+
+RIGHTPAREN
+	: ')'
+	;
+
 // Need to add commments
 WS : [ \t\r\n]+ -> skip; // skip spaces, tabs, newlines
+COMMENT : ('{' (.)*? '}') -> skip;
