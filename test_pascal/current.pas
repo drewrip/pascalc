@@ -5,16 +5,17 @@ VAR
 
 FUNCTION CircleArea(r : REAL): REAL;
 BEGIN
-    stmt
+    r := 2;
 END;
 
 PROCEDURE TestProc(r : INTEGER);
 	VAR
 		ProcVar : CHAR;
 BEGIN
-    stmt
+    ProcVar -= 33.23;
 END;
 
 BEGIN
-	stmt {some useful piece of info}
+	someid := 1 + 1;
+	// This is a comment as well and should be ignored
 END.
